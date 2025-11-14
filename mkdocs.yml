@@ -1,30 +1,52 @@
+# Основная информация о сайте
 site_name: IT Рынок России
 site_description: Анализ IT сектора экономики России - обзор рынка, перспективы и инвестиционные возможности
 site_author: IT Analyst
-site_url: https://aka-Steam.github.io/static/
+site_url: https://aka-Steam.github.io/static-site-mkdocs/  # URL сайта на GitHub Pages
 
+# Структура навигации сайта 
 nav:
   - Главная: index.md
   - Обзор рынка: overview.md
   - Инвестиционные возможности: companies.md
 
+# Расширения Markdown для расширенной функциональности
 markdown_extensions:
+  # Подсветка синтаксиса кода с якорями для номеров строк
   - pymdownx.highlight:
-      anchor_linenums: true
+      anchor_linenums: true  # Создает якоря для каждой строки кода
+  
+  # Подсветка синтаксиса встроенного кода (inline code)
   - pymdownx.inlinehilite
+  
+  # Поддержка включения файлов (snippets) в Markdown
   - pymdownx.snippets
+  
+  # Расширенные блоки кода с поддержкой кастомных форматов
   - pymdownx.superfences:
       custom_fences:
+        # Поддержка диаграмм Mermaid
         - name: mermaid
           class: mermaid
           format: !!python/name:pymdownx.superfences.fence_code_format
+  
+  # Блоки-уведомления (admonitions): note, warning, tip и т.д.
   - admonition
+  
+  # Сворачиваемые блоки (details/summary)
   - pymdownx.details
+  
+  # Вкладки (tabs) для организации контента
   - pymdownx.tabbed:
-      alternate_style: true
+      alternate_style: true  # Альтернативный стиль вкладок
+  
+  # Добавление HTML атрибутов к элементам Markdown
   - attr_list
+  
+  # Разрешение использования HTML внутри Markdown
   - md_in_html
 
-repo_name: static
-repo_url: https://github.com/aka-Steam/static
-edit_uri: edit/main/docs/
+# Настройки репозитория GitHub
+repo_name: static-site-mkdocs
+repo_url: https://github.com/aka-Steam/static-site-mkdocs
+edit_uri: edit/main/docs/ 
