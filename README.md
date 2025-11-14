@@ -27,3 +27,24 @@ static/
 └── README.md                  # Этот файл
 ```
 
+## Деплой на GitHub Pages
+
+1. **Создаем репозиторий на GitHub**
+
+2. **Обновляем конфигурацию** в `mkdocs.yml`:
+   - Указываем `repo_name` и `repo_url`
+   - Указываем `site_url` - адрес вашего GitHub Pages сайта
+
+
+3. **Настраиваем GitHub Pages**:
+   - Перейдите в Settings → Pages
+   - В разделе "Source" выберите "GitHub Actions"
+   ![GitHub Actions](./images/ga.png)
+
+
+4. **Пушим код в репозиторий**:
+   
+5. **GitHub Actions автоматически**:
+
+   - Соберет сайт при каждом push в ветку `master`
+   - Задеплоит его на GitHub Pages
