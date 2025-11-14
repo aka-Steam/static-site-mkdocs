@@ -1,0 +1,30 @@
+site_name: IT Рынок России
+site_description: Анализ IT сектора экономики России - обзор рынка, перспективы и инвестиционные возможности
+site_author: IT Analyst
+site_url: https://aka-Steam.github.io/static/
+
+nav:
+  - Главная: index.md
+  - Обзор рынка: overview.md
+  - Инвестиционные возможности: companies.md
+
+markdown_extensions:
+  - pymdownx.highlight:
+      anchor_linenums: true
+  - pymdownx.inlinehilite
+  - pymdownx.snippets
+  - pymdownx.superfences:
+      custom_fences:
+        - name: mermaid
+          class: mermaid
+          format: !!python/name:pymdownx.superfences.fence_code_format
+  - admonition
+  - pymdownx.details
+  - pymdownx.tabbed:
+      alternate_style: true
+  - attr_list
+  - md_in_html
+
+repo_name: static
+repo_url: https://github.com/aka-Steam/static
+edit_uri: edit/main/docs/
