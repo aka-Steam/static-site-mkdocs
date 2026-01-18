@@ -1,8 +1,8 @@
 # Основная информация о сайте
 site_name: IT Рынок России
 site_description: Анализ IT сектора экономики России - обзор рынка, перспективы и инвестиционные возможности
-site_author: IT Analyst
-site_url: https://aka-Steam.github.io/static-site-mkdocs/  # URL сайта на GitHub Pages
+site_author: Andrey Pravosudov
+site_url: https://aka-Steam.github.io/static-site-mkdocs/ 
 
 # Структура навигации сайта 
 nav:
@@ -49,4 +49,9 @@ markdown_extensions:
 # Настройки репозитория GitHub
 repo_name: static-site-mkdocs
 repo_url: https://github.com/aka-Steam/static-site-mkdocs
-edit_uri: edit/main/docs/ 
+edit_uri: edit/main/docs/
+
+theme:
+  name: null
+  custom_dir: themes/custom-theme
+  locale: ru 

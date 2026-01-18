@@ -1,0 +1,27 @@
+{
+  "name": "static-site-mkdocs",
+  "version": "1.0.0",
+  "description": "Статический сайт IT Рынок России с кастомной темой MkDocs",
+  "scripts": {
+    "postcss": "postcss themes/custom-theme/static/css/main.css -o themes/custom-theme/static/css/main.min.css",
+    "build:css": "postcss themes/custom-theme/static/css/main.css -o themes/custom-theme/static/css/main.min.css",
+    "minify:js": "terser themes/custom-theme/static/js/main.js -o themes/custom-theme/static/js/main.min.js -c -m",
+    "build:assets": "npm run build:css && npm run minify:js"
+  },
+  "devDependencies": {
+    "autoprefixer": "^10.4.20",
+    "cssnano": "^7.0.6",
+    "postcss": "^8.4.47",
+    "postcss-cli": "^11.0.0",
+    "postcss-import": "^16.1.0",
+    "terser": "^5.36.0",
+    "html-minifier-terser": "^7.2.0"
+  },
+  "keywords": [
+    "mkdocs",
+    "static-site",
+    "it-market"
+  ],
+  "author": "IT Analyst",
+  "license": "MIT"
+}

@@ -1,5 +1,5 @@
 # Название workflow для GitHub Actions
-name: Deploy to GitHub Pages
+name: Build, Test and Deploy to GitHub Pages
 
 # Триггеры запуска workflow
 on:
@@ -22,9 +22,48 @@ concurrency:
 
 # Определение задач
 jobs:
-  # Задача сборки сайта
+  # Задача тестирования и сборки статики
+  build-static:
+    name: Build Static Assets (CSS/JS)
+    runs-on: ubuntu-latest
+    steps:
+      # Шаг 1: Получение кода из репозитория
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      # Шаг 2: Установка Node.js
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      # Шаг 3: Установка Node.js зависимостей
+      - name: Install Node.js dependencies
+        run: npm ci
+
+      # Шаг 4: Сборка CSS с PostCSS
+      - name: Build CSS with PostCSS
+        run: npm run build:css
+
+      # Шаг 5: Минификация JavaScript
+      - name: Minify JavaScript
+        run: npm run minify:js
+
+      # Шаг 6: Сохранение собранных статических файлов как артефакт
+      - name: Upload static assets
+        uses: actions/upload-artifact@v4
+        with:
+          name: static-assets
+          path: |
+            themes/custom-theme/static/css/main.min.css
+            themes/custom-theme/static/js/main.min.js
+
+  # Задача сборки и валидации сайта
   build:
-    runs-on: ubuntu-latest    # ОС для выполнения (Ubuntu Linux)
+    name: Build, Validate and Minify Site
+    runs-on: ubuntu-latest
+    needs: build-static
     steps:
       # Шаг 1: Получение кода из репозитория
       - name: Checkout repository
@@ -34,36 +73,95 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
-          python-version: '3.12'  # Версия Python
+          python-version: '3.12'
           cache: 'pip'
 
-      # Шаг 3: Установка зависимостей проекта
-      - name: Install dependencies
+      # Шаг 3: Установка Python зависимостей
+      - name: Install Python dependencies
         run: |
-          python -m pip install --upgrade pip  # Обновление pip
-          pip install -r requirements.txt       # Установка зависимостей из файла
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
 
-      # Шаг 4: Сборка статического сайта с помощью MkDocs
-      - name: Build site
-        run: mkdocs build  # Генерирует HTML файлы в папку ./site
+      # Шаг 4: Установка Node.js для минификации HTML
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
 
-      # Шаг 5: Настройка GitHub Pages
+      # Шаг 5: Установка Node.js зависимостей
+      - name: Install Node.js dependencies
+        run: npm ci
+
+      # Шаг 6: Восстановление собранных статических файлов
+      - name: Download static assets
+        uses: actions/download-artifact@v4
+        with:
+          name: static-assets
+          path: themes/custom-theme/static/
+
+      # Шаг 7: Копирование минифицированных файлов
+      - name: Copy minified files
+        run: |
+          cp themes/custom-theme/static/css/main.min.css themes/custom-theme/static/css/main.css
+          cp themes/custom-theme/static/js/main.min.js themes/custom-theme/static/js/main.js
+
+      # Шаг 8: Сборка статического сайта с помощью MkDocs
+      - name: Build MkDocs site
+        run: mkdocs build
+
+      # Шаг 9: Валидация HTML файлов
+      - name: Validate HTML
+        run: |
+          # Скачивание HTML валидатора
+          curl -L -o vnu.jar https://github.com/validator/validator/releases/latest/download/vnu.jar
+          # Валидация (не прерываем сборку при предупреждениях)
+          java -jar vnu.jar --skip-non-css --format json site/*.html site/**/*.html || true
+
+      # Шаг 10: Минификация HTML файлов
+      - name: Minify HTML files
+        run: |
+          find site -name "*.html" -type f | while read file; do
+            npx html-minifier-terser \
+              --collapse-whitespace \
+              --remove-comments \
+              --remove-optional-tags \
+              --remove-redundant-attributes \
+              --remove-script-type-attributes \
+              --remove-tag-whitespace \
+              --use-short-doctype \
+              --minify-css true \
+              --minify-js true \
+              -o "$file.tmp" \
+              "$file" && mv "$file.tmp" "$file"
+          done
+
+      # Шаг 11: Проверка структуры собранного сайта
+      - name: Check built site structure
+        run: |
+          echo "Проверка структуры сайта:"
+          ls -la site/
+          echo "Проверка HTML файлов:"
+          find site -name "*.html" | head -5
+
+      # Шаг 12: Настройка GitHub Pages
       - name: Setup Pages
         uses: actions/configure-pages@v4
 
-      # Шаг 6: Загрузка собранного сайта как артефакт
+      # Шаг 13: Загрузка собранного сайта как артефакт
       - name: Upload artifact
-        uses: actions/upload-pages-artifact@v3
+        uses: actions/upload-pages-artifact@v4
         with:
-          path: ./site  # Путь к собранному сайту
+          path: ./site
 
   # Задача деплоя на GitHub Pages
   deploy:
+    name: Deploy to GitHub Pages
     environment:
-      name: github-pages  # Имя окружения для деплоя
-      url: ${{ steps.deployment.outputs.page_url }}  # URL деплоя
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
     runs-on: ubuntu-latest
-    needs: build  # Зависимость: деплой выполняется только после успешной сборки
+    needs: build
     steps:
       # Деплой артефакта на GitHub Pages
       - name: Deploy to GitHub Pages

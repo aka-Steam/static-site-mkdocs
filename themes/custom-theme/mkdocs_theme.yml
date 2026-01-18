@@ -1,0 +1,5 @@
+# Конфигурация кастомной темы
+locale: ru
+static_templates:
+  - 404.html
+custom_dir: custom

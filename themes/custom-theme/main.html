@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="{{ config.theme.language or 'ru' }}">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <!-- Метаданные сайта -->
+    <meta name="description" content="{{ config.site_description }}">
+    <meta name="author" content="{{ config.site_author }}">
+    <meta name="keywords" content="IT, Россия, рынок, анализ, инвестиции">
+    
+    <!-- Open Graph метаданные -->
+    <meta property="og:title" content="{{ page.title }} - {{ config.site_name }}">
+    <meta property="og:description" content="{{ config.site_description }}">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="{{ page.canonical_url }}">
+    
+    <!-- Twitter Card метаданные -->
+    <meta name="twitter:card" content="summary">
+    <meta name="twitter:title" content="{{ page.title }} - {{ config.site_name }}">
+    <meta name="twitter:description" content="{{ config.site_description }}">
+    
+    <title>{% if page.title %}{{ page.title }} - {% endif %}{{ config.site_name }}</title>
+    
+    <!-- CSS -->
+    <link rel="stylesheet" href="{{ 'static/css/main.css' | url }}">
+    
+    {% if config.extra.css %}
+        {% for css_file in config.extra.css %}
+            <link rel="stylesheet" href="{{ css_file | url }}">
+        {% endfor %}
+    {% endif %}
+    
+    {% block extrahead %}{% endblock %}
+</head>
+<body>
+    <!-- Header -->
+    <header class="site-header">
+        <div class="container">
+            <div class="header-content">
+                <div class="logo">
+                    <a href="{{ nav.homepage.url | url }}">
+                        <h1>{{ config.site_name }}</h1>
+                    </a>
+                </div>
+                <nav class="main-nav">
+                    <ul>
+                        {% for nav_item in nav %}
+                            <li>
+                                <a href="{{ nav_item.url | url }}">
+                                    {{ nav_item.title }}
+                                </a>
+                            </li>
+                        {% endfor %}
+                    </ul>
+                </nav>
+                <button class="mobile-menu-toggle" aria-label="Toggle menu">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="site-main">
+        <div class="container">
+            <article class="content {% if page.url == nav.homepage.url %}home-page{% endif %}">
+                {% block content %}
+                    {{ page.content }}
+                {% endblock %}
+            </article>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="site-footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h3>{{ config.site_name }}</h3>
+                    <p>{{ config.site_description }}</p>
+                </div>
+                <div class="footer-section">
+                    <h4>Навигация</h4>
+                    <ul>
+                        {% for nav_item in nav %}
+                            <li><a href="{{ nav_item.url | url }}">{{ nav_item.title }}</a></li>
+                        {% endfor %}
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h4>Информация</h4>
+                    <ul>
+                        <li>Автор: {{ config.site_author }}</li>
+                        {% if config.repo_url %}
+                            <li><a href="{{ config.repo_url }}" target="_blank" rel="noopener">GitHub репозиторий</a></li>
+                        {% endif %}
+                        {% if config.site_url %}
+                            <li><a href="{{ config.site_url }}" target="_blank" rel="noopener">Веб-сайт</a></li>
+                        {% endif %}
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; {{ config.site_author }} 2025. Все права защищены.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- JavaScript -->
+    <script src="{{ 'static/js/main.js' | url }}"></script>
+    
+    {% if config.extra.js %}
+        {% for js_file in config.extra.js %}
+            <script src="{{ js_file | url }}"></script>
+        {% endfor %}
+    {% endif %}
+    
+    {% block extrafooter %}{% endblock %}
+</body>
+</html>
