@@ -40,7 +40,7 @@ jobs:
 
       # Шаг 3: Установка Node.js зависимостей
       - name: Install Node.js dependencies
-        run: npm ci
+        run: npm install
 
       # Шаг 4: Сборка CSS с PostCSS
       - name: Build CSS with PostCSS
@@ -91,7 +91,7 @@ jobs:
 
       # Шаг 5: Установка Node.js зависимостей
       - name: Install Node.js dependencies
-        run: npm ci
+        run: npm install
 
       # Шаг 6: Восстановление собранных статических файлов
       - name: Download static assets
